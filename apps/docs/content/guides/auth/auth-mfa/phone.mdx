@@ -200,6 +200,11 @@ function AppWithMFA() {
         if (data.nextLevel === 'aal2' && data.nextLevel !== data.currentLevel) {
           setShowMFAScreen(true)
         }
+      } catch (error) {
+        // Fail closed: if the AAL check throws, show the MFA screen instead of
+        // the app so an error can't let the user bypass the challenge.
+        console.error(error)
+        setShowMFAScreen(true)
       } finally {
         setReadyToShow(true)
       }
