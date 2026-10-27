@@ -178,7 +178,7 @@ Create the following files inside the `.github/workflows` directory:
   defaultActiveId="ci"
   queryGroup="environment"
 >
-<TabPanel id="ci" label="ci.yaml">
+<TabPanel id="ci" label="ci.yml">
 
 ```yaml .github/workflows/ci.yml
 name: CI
@@ -318,7 +318,7 @@ Once the test error is resolved, merge this PR and watch the deployment in actio
 
 After verifying your staging project has successfully migrated, create another PR from `develop` to `main` and merge it to deploy the migration to the production project.
 
-The `release` job applies all new migration scripts merged in `supabase/migrations` directory to a linked Supabase project. You can control which project the job links to via `PROJECT_ID` environment variable.
+The `deploy` job applies all new migration scripts merged in `supabase/migrations` directory to a linked Supabase project. You can control which project the job links to via the `SUPABASE_PROJECT_ID` environment variable.
 
 ## Troubleshooting
 
