@@ -20,6 +20,10 @@ functions:
     description: |
       You can initialize a new Supabase client using the `create_client()` method.
 
+      For `asyncio` applications, and for Realtime (which requires the async
+      client), use `acreate_client()` (also exported as `create_async_client()`)
+      to get an `AsyncClient` whose methods you `await`.
+
       The Supabase client is your entrypoint to the rest of the Supabase functionality
       and is the easiest way to interact with everything we offer within the Supabase ecosystem.
 
@@ -35,7 +39,7 @@ functions:
       - name: options
         isOptional: true
         type: ClientOptions
-        description: Options to change the Auth behaviors.
+        description: Options to configure the client, including Auth, PostgREST, Storage, Realtime, and the default schema.
         subContent:
           - name: schema
             isOptional: true
@@ -105,6 +109,24 @@ functions:
                   schema="public",
               )
           )
+          ```
+      - id: create-async-client
+        name: With the async client
+        code: |
+          ```python
+          import asyncio
+          import os
+          from supabase import acreate_client, AsyncClient
+
+          url: str = os.environ.get("SUPABASE_URL")
+          key: str = os.environ.get("SUPABASE_KEY")
+
+          async def main():
+              supabase: AsyncClient = await acreate_client(url, key)
+              response = await supabase.table("planets").select("*").execute()
+              print(response)
+
+          asyncio.run(main())
           ```
 
   - id: auth-api
@@ -992,6 +1014,26 @@ functions:
             },
             "signature": [/** Uint8Array */],
           }
+          ```
+  - id: on-auth-state-change
+    title: 'on_auth_state_change()'
+    notes: |
+      - Receive a notification every time an auth event happens.
+      - The callback is called with the `event` name and the current `session` (which may be `None`).
+      - Returns a `Subscription`. Call its `unsubscribe()` to stop listening.
+    examples:
+      - id: listen-to-auth-changes
+        name: Listen to auth changes
+        isSpotlight: true
+        code: |
+          ```python
+          def handle_auth_change(event, session):
+              print(event, session)
+
+          subscription = supabase.auth.on_auth_state_change(handle_auth_change)
+
+          # Later, to stop listening:
+          # subscription.unsubscribe()
           ```
   - id: sign-out
     title: 'sign_out()'
@@ -2054,6 +2096,19 @@ functions:
                   "friendly_name": "your_friendly_name",
               }
           )
+          ```
+  - id: auth-js-gotruemfaapi-listfactors
+    title: 'mfa.list_factors()'
+    notes: |
+      - Returns the list of MFA factors enrolled for the currently signed-in user.
+      - Invoked behind the `supabase.auth.mfa` namespace.
+    examples:
+      - id: list-factors
+        name: List all factors for a user
+        isSpotlight: true
+        code: |
+          ```python
+          response = supabase.auth.mfa.list_factors()
           ```
   - id: mfa-challenge
     title: 'mfa.challenge()'
