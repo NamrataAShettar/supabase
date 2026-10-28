@@ -147,6 +147,36 @@ View the [complete code](https://github.com/supabase/supabase/tree/master/exampl
 
 </Admonition>
 
+### Rolling back a migration
+
+Supabase migrations are forward-only. The CLI does not generate or run "down" migrations, so there is no single command that reverts the last migration on a remote database. How you undo a change depends on where it was applied.
+
+**Locally**, migrations are not applied incrementally in reverse. To back out a migration you haven't shipped yet, edit or delete its file in `supabase/migrations` and rebuild the local database from scratch:
+
+```bash name=Terminal
+supabase db reset
+```
+
+`db reset` drops the local database, re-runs every remaining migration in order, and re-applies your seed. Deleting the file alone does not change an already-applied local database until you reset.
+
+**On a remote (staging or production) database**, do not delete or edit a migration file that has already been applied. The change is already live, and removing the file only desynchronizes your local history from the remote. Instead, write a new forward migration that undoes it:
+
+```bash name=Terminal
+supabase migration new revert_add_department_column
+```
+
+```sql name=supabase/migrations/<timestamp>_revert_add_department_column.sql
+alter table employees drop column department;
+```
+
+Then apply it with `supabase migration up` (locally) and `supabase db push` (remote), the same as any other migration. This keeps the migration history an accurate, append-only record of what ran against the database.
+
+<Admonition type="caution">
+
+`supabase migration repair --status reverted <timestamp>` only updates the migration history table; it does not run any SQL or undo the change. Use it to correct the tracking record, not to roll back a migration. See [Diagnosing and fixing sync errors](#diagnosing-and-fixing-sync-errors).
+
+</Admonition>
+
 ### Seeding data
 
 Now that you are managing your database with migrations, it would be great have some seed data to use every time you reset the database.
