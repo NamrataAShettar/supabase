@@ -244,6 +244,9 @@ Instead of `https://project-id.supabase.co` use `https://project-id.storage.supa
     from tusclient import client
     from supabase import create_client
 
+    supabase_url = "https://your-project-ref.supabase.co"
+    supabase_key = "<your-publishable-key>"
+
     def upload_file(
         bucket_name: str, file_name: str, file: BufferedReader, access_token: str
     ):
@@ -351,14 +354,11 @@ const { data } = await supabase.storage.from('bucket_name').createSignedUploadUr
 <TabPanel id="python" label="Python">
 
 ```python
-# Create a signed upload URL with upsert option
-response = supabase.storage.from_('bucket_name').create_signed_upload_url(
-    'file_path',
-    options={'upsert': 'true'}  # Optional: allow overwriting existing files
-)
+# Create a signed upload URL
+response = supabase.storage.from_('bucket_name').create_signed_upload_url('file_path')
 
 # Use the signed URL token in resumable upload headers
-# Include response.token in the x-signature header
+# Include response['token'] in the x-signature header
 ```
 
 </TabPanel>
