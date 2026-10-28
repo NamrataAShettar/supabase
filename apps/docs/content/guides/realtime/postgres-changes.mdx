@@ -867,7 +867,7 @@ supabase
 
 </TabPanel>
 </$Show>
-<$Show if="sdk:swfit">
+<$Show if="sdk:swift">
 <TabPanel id="swift" label="Swift">
 
 ```swift
@@ -3431,21 +3431,6 @@ await myChannel.subscribe()
 
 </TabPanel>
 </$Show>
-<$Show if="sdk:python">
-<TabPanel id="python" label="Python">
-
-```python
-changes = supabase.channel('changes').on_postgres_changes(
-  "*",
-  schema="public",
-  table="profiles",
-  select=["id", "username"],
-  callback=lambda payload: print(payload)
-).subscribe()
-```
-
-</TabPanel>
-</$Show>
 </Tabs>
 
 ## Receiving `old` records
@@ -3651,7 +3636,7 @@ Postgres Changes authorizes every event against each subscriber. When you make a
 For most applications this is plenty. To get the best performance:
 
 - Use [filters](#available-filters) and [column selection](#selecting-specific-columns) to send each client only the events and columns it needs.
-- Keep authorization cheap by writing , indexed [RLS policies](/docs/guides/database/postgres/row-level-security).
+- Keep authorization cheap by writing simple, indexed [RLS policies](/docs/guides/database/postgres/row-level-security).
 
 Use the estimator below to gauge the maximum throughput for your instance, and run your own benchmarks to confirm it fits your use case:
 
