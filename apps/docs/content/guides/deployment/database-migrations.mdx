@@ -149,17 +149,17 @@ View the [complete code](https://github.com/supabase/supabase/tree/master/exampl
 
 ### Rolling back a migration
 
-Supabase migrations are forward-only. The CLI does not generate or run "down" migrations, so there is no single command that reverts the last migration on a remote database. How you undo a change depends on where it was applied.
+There's no safe, surgical undo for a migration. Supabase migrations are forward-only and ship no generated "down" scripts. The `supabase migration down` command resets applied migrations, but it works by dropping your schemas and re-running the remaining ones, so it destroys data. How you undo a change depends on where it was applied.
 
-**Locally**, rebuild the database from scratch. To back out a migration you haven't shipped yet, edit or delete its file in `supabase/migrations` and reset:
+**Locally**, data is disposable, so resetting is fine. To revert the most recent migration, run:
 
 ```bash name=Terminal
-supabase db reset
+supabase migration down --last 1
 ```
 
-`db reset` drops the local database, re-runs every remaining migration in order, and re-applies your seed. Deleting the file alone does not change an already-applied local database until you reset.
+This rebuilds the local database up to the previous version. `supabase db reset` is the equivalent full rebuild from scratch. Editing or deleting a migration file does not change an already-applied local database until you reset.
 
-**On a remote (staging or production) database**, do not delete or edit a migration file that has already been applied. The change is already live, and removing the file only puts your local history out of sync with the remote. Instead, write a new forward migration that undoes it:
+**On a remote (staging or production) database, don't reset.** `supabase migration down --linked` can revert migrations on the linked project, but it drops every schema first and warns that you will lose all data, so it's unsafe for data you care about. Don't delete or edit an already-applied migration file either, since that only puts your local history out of sync with the remote. Instead, write a new forward migration that undoes the change:
 
 ```bash name=Terminal
 supabase migration new revert_add_department_column
