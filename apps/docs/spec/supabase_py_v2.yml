@@ -20,9 +20,9 @@ functions:
     description: |
       You can initialize a new Supabase client using the `create_client()` method.
 
-      For `asyncio` applications, and for Realtime (which requires the async
-      client), use `acreate_client()` (also exported as `create_async_client()`)
-      to get an `AsyncClient` whose methods you `await`.
+      Realtime requires the async client. For `asyncio` apps, use
+      `acreate_client()` (also exported as `create_async_client()`) to get an
+      `AsyncClient` whose methods you `await`.
 
       The Supabase client is your entrypoint to the rest of the Supabase functionality
       and is the easiest way to interact with everything we offer within the Supabase ecosystem.
@@ -1019,7 +1019,7 @@ functions:
     title: 'on_auth_state_change()'
     notes: |
       - Receive a notification every time an auth event happens.
-      - The callback is called with the `event` name and the current `session` (which may be `None`).
+      - Your callback receives the `event` name and the current `session` (which may be `None`).
       - Returns a `Subscription`. Call its `unsubscribe()` to stop listening.
     examples:
       - id: listen-to-auth-changes
