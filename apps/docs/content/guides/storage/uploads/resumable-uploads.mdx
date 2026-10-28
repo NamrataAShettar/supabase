@@ -113,6 +113,9 @@ Instead of `https://project-id.supabase.co` use `https://project-id.storage.supa
     import "@uppy/core/dist/style.min.css";
     import "@uppy/dashboard/dist/style.min.css";
 
+    const projectId = "";
+    const publishableKey = "<your-publishable-key>";
+
     function App() {
         // Initialize Uppy instance with the 'sample' bucket specified for uploads
         const uppy = useUppyWithSupabase({ bucketName: "sample" });
@@ -159,7 +162,7 @@ Instead of `https://project-id.supabase.co` use `https://project-id.storage.supa
                     retryDelays: [0, 3000, 5000, 10000, 20000], // Retry delays for resumable uploads
                     headers: {
                         authorization: `Bearer ${session?.access_token}`, // User session access token
-                        apikey: anonKey, // API key for Supabase
+                        apikey: publishableKey, // API key for Supabase
                     },
                     uploadDataDuringCreation: true, // Send metadata with file chunks
                     removeFingerprintOnSuccess: true, // Remove fingerprint after successful upload
@@ -328,7 +331,7 @@ Uppy has integrations with different frameworks:
 
 ## Presigned uploads
 
-Resumable uploads also supports using signed upload tokens to created time-limited URLs that you can share to your users by invoking the `createSignedUploadUrl` method on the SDK and including the returned token in the `x-signature` header of the resumable upload.
+Resumable uploads also support using signed upload tokens to create time-limited URLs that you can share with your users by invoking the `createSignedUploadUrl` method on the SDK and including the returned token in the `x-signature` header of the resumable upload.
 
 <Tabs
   scrollable
