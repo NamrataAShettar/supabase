@@ -44,7 +44,7 @@ https://supabase.com/dashboard/project/<project-id>
 If you're using an existing Supabase project, you might have made schema changes through the Dashboard.
 Run the following command to pull these changes before making local schema changes from the CLI:
 
-```sql
+```bash
 supabase db pull
 ```
 
@@ -217,7 +217,7 @@ jobs:
 The `supabase db diff --strict-coverage` step applies to projects on the `pg-delta` engine. It fails the job when `pg-delta` finds schema objects it doesn't track, instead of reporting them as warnings. Remove this step if your project uses the legacy `migra` engine, where the flag has no effect. See [Diff engines](/docs/guides/local-development/diff-engines).
 
 </TabPanel>
-<TabPanel id="staging" label="staging.yaml">
+<TabPanel id="staging" label="staging.yml">
 
 ```yaml .github/workflows/staging.yml
 name: Deploy Migrations to Staging
@@ -249,7 +249,7 @@ jobs:
 ```
 
 </TabPanel>
-<TabPanel id="production" label="production.yaml">
+<TabPanel id="production" label="production.yml">
 
 ```yaml .github/workflows/production.yml
 name: Deploy Migrations to Production
@@ -293,7 +293,7 @@ Commit these files to git and push to your `main` branch on GitHub. Update these
 - `STAGING_PROJECT_ID`
 - `STAGING_DB_PASSWORD`
 
-When configured correctly, your repository will have CI and Release workflows that trigger on new commits pushed to `main` and `develop` branches.
+When configured correctly, your repository will have CI and deploy workflows that trigger on new commits pushed to `main` and `develop` branches.
 
 ![Correctly configured repo](/docs/img/guides/cli/ci-main.png)
 
@@ -301,7 +301,7 @@ When configured correctly, your repository will have CI and Release workflows th
 
 Follow the [migration steps](#create-a-new-migration) to create a `supabase/migrations/<timestamp>_new_employee.sql` file.
 
-Checkout a new branch `feat/employee` from `develop` , commit the migration file, and push to GitHub.
+Checkout a new branch `feat/employee` from `develop`, commit the migration file, and push to GitHub.
 
 ```bash
 git checkout -b feat/employee
@@ -326,7 +326,7 @@ The `deploy` job applies all new migration scripts merged in `supabase/migration
 
 When setting up a new staging project, you might need to sync the initial schema with migrations previously applied to the production project.
 
-One way is to use the Release workflow:
+One way is to use the deploy workflow:
 
 - Create a new branch `develop` and choose `main` as the branch source
 - Push the `develop` branch to GitHub
@@ -335,13 +335,13 @@ The GitHub Actions runner will deploy your existing migrations to the staging pr
 
 Alternatively, you can also apply migrations through your local CLI to a linked remote database.
 
-```sql
+```bash
 supabase db push
 ```
 
 Once pushed, check that the migration version is up to date for both local and remote databases.
 
-```sql
+```bash
 supabase migration list
 ```
 
@@ -365,7 +365,7 @@ grant all on all sequences in schema graphql to postgres, anon, authenticated, s
 
 ### Permission denied on `db push`
 
-If you create a table using a custom database role, the default `postgres` user may lack permission to modify it. This can cause `42501` privilege errors during migrations. To resolve this, grant the 'postgres` user ownership of the custom role.
+If you create a table using a custom database role, the default `postgres` user may lack permission to modify it. This can cause `42501` privilege errors during migrations. To resolve this, grant the `postgres` user membership of the custom role.
 
 ```sql
 grant "custom_role" to "postgres";
