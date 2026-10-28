@@ -41,8 +41,10 @@ Instead of `https://project-id.supabase.co` use `https://project-id.storage.supa
 
     ```javascript
     const tus = require('tus-js-client')
+    const { createClient } = require('@supabase/supabase-js')
 
     const projectId = ''
+    const supabase = createClient(`https://${projectId}.supabase.co`, '<your-publishable-key>')
 
     async function uploadFile(bucketName, fileName, file) {
         const { data: { session } } = await supabase.auth.getSession()
@@ -125,9 +127,8 @@ Instead of `https://project-id.supabase.co` use `https://project-id.storage.supa
         }, []);
 
         return (
-            <div id="drag-drop-area">
-            </div>
-            {/* Target element for the Uppy Dashboard */}
+            // Target element for the Uppy Dashboard
+            <div id="drag-drop-area"></div>
         );
     }
 
