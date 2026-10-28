@@ -307,11 +307,31 @@ myChannel.subscribe()
 <TabPanel id="python" label="Python">
 
 ```python
-changes = supabase.channel('schema-db-changes').on_postgres_changes(
-  "*",
-  schema="public",
-  callback=lambda payload: print(payload)
-).subscribe()
+import asyncio
+from typing import Optional
+
+from supabase import acreate_client, AsyncClient
+from realtime import RealtimeSubscribeStates
+
+# Realtime requires the async client
+supabase: AsyncClient = await acreate_client(url, key)
+
+channel = supabase.channel('schema-db-changes')
+
+def on_subscribe(status: RealtimeSubscribeStates, err: Optional[Exception]):
+    if status == RealtimeSubscribeStates.SUBSCRIBED:
+        print("Listening to database changes")
+
+channel.on_postgres_changes(
+    "*",              # Listen to all changes
+    schema="public",  # Subscribes to the "public" schema in Postgres
+    callback=lambda payload: print(payload),
+)
+
+await channel.subscribe(on_subscribe)
+
+# Keep the connection open to continue receiving events
+await asyncio.Future()
 ```
 
 </TabPanel>
